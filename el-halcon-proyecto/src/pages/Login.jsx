@@ -9,7 +9,7 @@ function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Limpia advertencias previas
+    
     setWarning("");
 
     if (!username || !password) {
@@ -17,7 +17,7 @@ function Login() {
       return;
     }
 
-    // Aquí iría la lógica de autenticación
+    
     navigate("/dashboard");
   };
 

@@ -1,5 +1,4 @@
-import { Outlet } from "react-router-dom";
-import { Link } from "react-router-dom"
+import { Outlet, Link } from "react-router-dom";
 import {
   HomeIcon,
   ShoppingCartIcon,
@@ -14,25 +13,22 @@ import {
   ChevronDownIcon,
   BellIcon,
   FunnelIcon,
-  
 } from "@heroicons/react/24/outline";
 
 const sections = [
-  { name: "Products", icon: ShoppingCartIcon },
-  { name: "Sales", icon: CreditCardIcon },
-  { name: "Purchases", icon: ClipboardDocumentIcon },
-  { name: "Pawns", icon: ShieldCheckIcon },
-  { name: "Providers", icon: BuildingStorefrontIcon },
-  { name: "Customers", icon: UsersIcon },
-  { name: "Invoices", icon: DocumentDuplicateIcon },
-  { name: "Employees", icon: UserCircleIcon },
+  { name: "Products", icon: ShoppingCartIcon, path: "products" },
+  { name: "Sales", icon: CreditCardIcon, path: "sales" },
+  { name: "Purchases", icon: ClipboardDocumentIcon, path: "purchases" },
+  { name: "Pawns", icon: ShieldCheckIcon, path: "pawns" },
+  { name: "Providers", icon: BuildingStorefrontIcon, path: "providers" },
+  { name: "Customers", icon: UsersIcon, path: "customers" },
+  { name: "Invoices", icon: DocumentDuplicateIcon, path: "invoices" },
+  { name: "Employees", icon: UserCircleIcon, path: "employees" },
 ];
 
 function Dashboard() {
   return (
-    // Contenedor principal horizontal
     <div className="flex min-h-screen bg-gray-100">
-      
       {/* Sidebar */}
       <aside className="w-80 bg-white rounded-2xl shadow-lg p-6 flex flex-col justify-between">
         <div>
@@ -43,20 +39,21 @@ function Dashboard() {
 
           <p className="text-sm text-gray-500 mb-4">Menu</p>
 
-          {/* Botón Dashboard */}
-          <div className="flex items-center w-full justify-between bg-[#FF5E0A] text-white px-4 py-3 rounded-xl mb-4 shadow">
+          {/* Dashboard Button */}
+          <Link to="/dashboard" className="flex items-center w-full justify-between bg-[#FF5E0A] text-white px-4 py-3 rounded-xl mb-4 shadow">
             <div className="flex items-center gap-3">
               <HomeIcon className="w-5 h-5" />
               <span className="text-sm font-medium">DashBoards</span>
             </div>
             <ChevronDownIcon className="w-4 h-4" />
-          </div>
+          </Link>
 
-          {/* Secciones */}
+          {/* Sections */}
           <div className="space-y-3">
             {sections.map((item, idx) => (
-              <div
+              <Link
                 key={idx}
+                to={`/dashboard/${item.path}`}
                 className="flex items-center justify-between bg-white text-gray-700 px-4 py-3 rounded-xl shadow hover:bg-gray-100 transition"
               >
                 <div className="flex items-center gap-3">
@@ -64,7 +61,7 @@ function Dashboard() {
                   <span className="text-sm text-gray-500">{item.name}</span>
                 </div>
                 <ChevronDownIcon className="w-4 h-4 text-gray-400" />
-              </div>
+              </Link>
             ))}
           </div>
         </div>
@@ -76,17 +73,15 @@ function Dashboard() {
         </div>
       </aside>
 
-      {/* CONTENEDOR*/}
+      {/* Main Container */}
       <div className="flex flex-col flex-1">
-        
-        {/* NAVBAR  */}
+        {/* Navbar */}
         <header className="bg-[#FF5E0A] px-4">
           <div className="max-w-7xl mx-auto my-4 px-6 py-4 bg-white rounded-2xl shadow-md flex items-center justify-between">
             <div className="text-gray-800 text-lg font-semibold whitespace-nowrap">
               Welcome to El Halcon
             </div>
-
-            {/* Buscador */}
+            {/* Search */}
             <div className="flex-1 mx-8">
               <input
                 type="text"
@@ -94,8 +89,7 @@ function Dashboard() {
                 className="w-full px-4 py-2 text-sm rounded-full border border-gray-200 focus:outline-none shadow-inner"
               />
             </div>
-
-            {/* Elementos del navbar */}
+            {/* Navbar Items */}
             <div className="flex items-center gap-6 text-gray-800">
               <BellIcon className="w-5 h-5 cursor-pointer" />
               <FunnelIcon className="w-5 h-5 cursor-pointer" />
@@ -110,7 +104,7 @@ function Dashboard() {
           </div>
         </header>
 
-        {/* CONTENIDO REUTILIZABLE OUTLET */}
+        {/* Outlet Content */}
         <main className="flex-1 p-6 overflow-auto">
           <div className="bg-white rounded-2xl shadow-md p-6 h-full">
             <Outlet />
@@ -122,6 +116,5 @@ function Dashboard() {
 }
 
 export default Dashboard;
-
 
 

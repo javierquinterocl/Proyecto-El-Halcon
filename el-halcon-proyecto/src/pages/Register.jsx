@@ -24,7 +24,7 @@ function Register() {
       return;
     }
 
-    // Aquí iría la lógica de registro real
+   
     navigate("/dashboard");
   };
 

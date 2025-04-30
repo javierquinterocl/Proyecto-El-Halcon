@@ -1,25 +1,27 @@
 import { useState } from "react"
-import { PlusIcon, ChevronDownIcon, EllipsisVerticalIcon } from "@heroicons/react/24/outline"
+import { PlusIcon } from "@heroicons/react/24/outline"
 import { Link, useNavigate } from "react-router-dom"
 
-export default function Add() {
+export default function AddCustomer() {
   const navigate = useNavigate()
   const [formData, setFormData] = useState({
-    product_id: "",
-    product_name: "",
-    stock: "",
-    brand: "",
-    status: "A",      
-    image: "",
-    jewelry_id: "",    
-    non_jewelry_id: "" 
+    first_name: "",
+    middle_name: "",
+    last_name: "",
+    address: "",
+    phone: "",
+    email: "",
+    country_id: "",
+    department_id: "",
+    city_id: "",
+    document_id: "",
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    setFormData(prev => ({ ...prev, [name]: value }))
+    setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
   const handleSubmit = async (e) => {
@@ -27,17 +29,14 @@ export default function Add() {
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_URL || "http://localhost:4000"}/api/products`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData)
-        }
-      )
-      if (!res.ok) throw new Error("Error al crear el producto")
-      // on success, navigate back to dashboard or list
-      navigate("/dashboard")
+      const res = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:4000"}/api/customers`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      })
+      if (!res.ok) throw new Error("Error al crear el cliente")
+      // on success, navigate back to customers list
+      navigate("/dashboard/customers")
     } catch (err) {
       console.error(err)
       setError(err.message)
@@ -53,131 +52,164 @@ export default function Add() {
         <div className="bg-orange-500 p-1 rounded">
           <PlusIcon className="w-5 h-5 text-white" />
         </div>
-        <h1 className="text-xl text-gray-700">Add Product</h1>
+        <h1 className="text-xl text-gray-700">Añadir Cliente</h1>
       </div>
 
       <div className="bg-white rounded-lg shadow-sm max-w-3xl mx-auto p-6">
-        <h2 className="text-xl font-semibold mb-6">Create a new product</h2>
+        <h2 className="text-xl font-semibold mb-6">Crear un nuevo cliente</h2>
         <form onSubmit={handleSubmit}>
-          {/* ROW 1: ID & Name */}
+          {/* ROW 1: Nombre & Segundo Nombre */}
           <div className="flex flex-col md:flex-row gap-4 mb-4">
             <div className="flex-1">
               <label className="block text-sm font-medium mb-1">
-                Product ID<span className="text-red-500">*</span>
+                Nombre<span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
-                name="product_id"
-                value={formData.product_id}
+                name="first_name"
+                value={formData.first_name}
                 onChange={handleChange}
-                placeholder="e.g. P001"
+                placeholder="Nombre"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-orange-500"
+                required
+              />
+            </div>
+            <div className="flex-1">
+              <label className="block text-sm font-medium mb-1">Segundo Nombre</label>
+              <input
+                type="text"
+                name="middle_name"
+                value={formData.middle_name}
+                onChange={handleChange}
+                placeholder="Segundo Nombre (opcional)"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-orange-500"
+              />
+            </div>
+          </div>
+
+          {/* ROW 2: Apellido & Teléfono */}
+          <div className="flex flex-col md:flex-row gap-4 mb-4">
+            <div className="flex-1">
+              <label className="block text-sm font-medium mb-1">
+                Apellido<span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                name="last_name"
+                value={formData.last_name}
+                onChange={handleChange}
+                placeholder="Apellido"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-orange-500"
                 required
               />
             </div>
             <div className="flex-1">
               <label className="block text-sm font-medium mb-1">
-                Name<span className="text-red-500">*</span>
+                Teléfono<span className="text-red-500">*</span>
               </label>
               <input
-                type="text"
-                name="product_name"
-                value={formData.product_name}
+                type="tel"
+                name="phone"
+                value={formData.phone}
                 onChange={handleChange}
-                placeholder="Product Name"
+                placeholder="Teléfono"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-orange-500"
                 required
               />
             </div>
           </div>
 
-          {/* ROW 2: Stock & Brand */}
+          {/* ROW 3: Email & Tipo de Documento */}
           <div className="flex flex-col md:flex-row gap-4 mb-4">
             <div className="flex-1">
-              <label className="block text-sm font-medium mb-1">
-                Stock<span className="text-red-500">*</span>
-              </label>
+              <label className="block text-sm font-medium mb-1">Email</label>
               <input
-                type="number"
-                name="stock"
-                value={formData.stock}
+                type="email"
+                name="email"
+                value={formData.email}
                 onChange={handleChange}
-                placeholder="Quantity in stock"
+                placeholder="Email (opcional)"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-orange-500"
-                required
               />
             </div>
             <div className="flex-1">
               <label className="block text-sm font-medium mb-1">
-                Brand<span className="text-red-500">*</span>
+                Tipo de Documento<span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
-                name="brand"
-                value={formData.brand}
+                name="document_id"
+                value={formData.document_id}
                 onChange={handleChange}
-                placeholder="Brand Name"
+                placeholder="Código de Documento"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-orange-500"
                 required
+                maxLength={3}
               />
             </div>
           </div>
 
-          {/* ROW 3: Status & Image URL */}
-          <div className="flex flex-col md:flex-row gap-4 mb-4">
-            <div className="flex-1">
-              <label className="block text-sm font-medium mb-1">Status</label>
-              <select
-                name="status"
-                value={formData.status}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-orange-500"
-              >
-                <option value="A">Active</option>
-                <option value="I">Inactive</option>
-              </select>
-            </div>
-            <div className="flex-1">
-              <label className="block text-sm font-medium mb-1">Image URL</label>
-              <input
-                type="text"
-                name="image"
-                value={formData.image}
-                onChange={handleChange}
-                placeholder="https://..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-orange-500"
-              />
-            </div>
+          {/* ROW 4: Dirección */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-1">
+              Dirección<span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              name="address"
+              value={formData.address}
+              onChange={handleChange}
+              placeholder="Dirección"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-orange-500"
+              required
+            />
           </div>
 
-          {/* ROW 4: Jewelry & Non-Jewelry IDs */}
+          {/* ROW 5: País, Departamento y Ciudad */}
           <div className="flex flex-col md:flex-row gap-4 mb-4">
             <div className="flex-1">
               <label className="block text-sm font-medium mb-1">
-                Jewelry ID<span className="text-red-500">*</span>
+                País<span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
-                name="jewelry_id"
-                value={formData.jewelry_id}
+                name="country_id"
+                value={formData.country_id}
                 onChange={handleChange}
-                placeholder="e.g. J001"
+                placeholder="Código de País"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-orange-500"
                 required
+                maxLength={3}
               />
             </div>
             <div className="flex-1">
               <label className="block text-sm font-medium mb-1">
-                Non-Jewelry ID<span className="text-red-500">*</span>
+                Departamento<span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
-                name="non_jewelry_id"
-                value={formData.non_jewelry_id}
+                name="department_id"
+                value={formData.department_id}
                 onChange={handleChange}
-                placeholder="e.g. N001"
+                placeholder="Código de Departamento"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-orange-500"
                 required
+                maxLength={3}
+              />
+            </div>
+            <div className="flex-1">
+              <label className="block text-sm font-medium mb-1">
+                Ciudad<span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                name="city_id"
+                value={formData.city_id}
+                onChange={handleChange}
+                placeholder="Código de Ciudad"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-orange-500"
+                required
+                maxLength={3}
               />
             </div>
           </div>
@@ -188,19 +220,18 @@ export default function Add() {
           {/* BUTTONS */}
           <div className="flex justify-end gap-3">
             <Link
-              type="button"
-              to="/dashboard"
+              to="/dashboard/customers"
               className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
             >
-              Cancel
+              Cancelar
             </Link>
             <button
               type="submit"
               disabled={loading}
               className="px-4 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 flex items-center gap-1 disabled:opacity-50"
             >
-              {loading ? 'Adding...' : 'Add'}
-              <PlusIcon className="w-4 h-4" />
+              {loading ? "Añadiendo..." : "Añadir Cliente"}
+              {!loading && <PlusIcon className="w-4 h-4" />}
             </button>
           </div>
         </form>
@@ -208,8 +239,3 @@ export default function Add() {
     </div>
   )
 }
-
-
-
-
-  
