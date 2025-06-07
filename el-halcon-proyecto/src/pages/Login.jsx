@@ -9,7 +9,6 @@ function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
     setWarning("");
 
     if (!username || !password) {
@@ -17,7 +16,10 @@ function Login() {
       return;
     }
 
-    
+    // Guardar el nombre de usuario en localStorage
+    localStorage.setItem("userName", username);
+
+    // Navegar al dashboard
     navigate("/dashboard");
   };
 
@@ -29,7 +31,7 @@ function Login() {
       >
         <div className="flex justify-center">
           <img
-            src="/public/images/logoHalcon.png"
+            src="/images/logoHalcon.png"
             alt="Logo"
             className="w-20 h-20 mb-4"
           />
@@ -70,14 +72,16 @@ function Login() {
           type="submit"
           className="w-full bg-orange-500 text-white py-2 rounded hover:bg-orange-600 transition"
         >
-          Iniciar sesion
+          Iniciar sesión
         </button>
-        <a
-          href="/register"
-          className="text-orange-500 hover:underline text-sm font-medium"
-        >
-          ¿No tienes cuenta? Regístrate
-        </a>
+        <div className="mt-4 text-center">
+          <a
+            href="/register"
+            className="text-orange-500 hover:underline text-sm font-medium"
+          >
+            ¿No tienes cuenta? Regístrate
+          </a>
+        </div>
       </form>
     </div>
   );

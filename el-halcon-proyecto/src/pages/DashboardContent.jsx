@@ -69,17 +69,17 @@ function DashboardContent() {
 
   // DATOS STATS PARA MAP
   const stats = [
-    { label: "New Customers", value: counts.customers, icon: UsersIcon, percentage: 8 },
-    { label: "New Orders", value: counts.orders, icon: NewspaperIcon, percentage: 27 },
-    { label: "New Products", value: counts.products, icon: ClipboardDocumentIcon, percentage: 8 },
-    { label: "Providers Registered", value: counts.providers, icon: UserCircleIcon, percentage: 5 },
+    { label: "Nuevo cliente", value: counts.customers, icon: UsersIcon, percentage: 8 },
+    { label: "Nueva orden", value: counts.orders, icon: NewspaperIcon, percentage: 27 },
+    { label: "Nuevo producto", value: counts.products, icon: ClipboardDocumentIcon, percentage: 8 },
+    { label: "Proveedores", value: counts.providers, icon: UserCircleIcon, percentage: 5 },
   ]
 
   const additionalStats = [
-    { label: "Providers Registered", value: counts.providers, icon: UserCircleIcon },
-    { label: "Pawns Registered", value: 25, icon: ClipboardDocumentIcon },
-    { label: "Sales Registered", value: counts.orders, icon: NewspaperIcon },
-    { label: "Documents", value: 34, icon: DocumentDuplicateIcon },
+    { label: "Proveedores", value: counts.providers, icon: UserCircleIcon },
+    { label: "Empeños registrados", value: 25, icon: ClipboardDocumentIcon },
+    { label: "Ventas registradas", value: counts.orders, icon: NewspaperIcon },
+    { label: "Documentos", value: 34, icon: DocumentDuplicateIcon },
   ]
 
   // Generar datos aleatorios para el gráfico
@@ -222,14 +222,14 @@ function DashboardContent() {
           <div className="text-[#Fff] bg-[#FF5E0A] p-2 rounded">
             <Squares2X2Icon className="w-6 h-6" />
           </div>
-          <h2 className="text-xl font-medium text-gray-700">Overview</h2>
+          <h2 className="text-xl font-medium text-gray-700">Descripcion</h2>
         </div>
 
         <Link
           to="/dashboard/add"
           className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md flex items-center gap-2"
         >
-          Create New
+          Crear 
           <span className="bg-white/20 rounded p-0.5">
             <PlusIcon className="w-4 h-4" />
           </span>
@@ -263,7 +263,7 @@ function DashboardContent() {
         <div className="bg-white rounded-lg shadow-sm p-6 flex-1 lg:w-3/4">
           <div className="flex justify-between items-center mb-6">
             <div>
-              <h3 className="font-medium text-gray-700">Sale Orders</h3>
+              <h3 className="font-medium text-gray-700">Orden de venta</h3>
               <div className="flex items-center mt-1">
                 <span
                   className={`text-sm font-medium flex items-center ${salesTrend.isUp ? "text-[#8a8aef]" : "text-red-500"}`}
