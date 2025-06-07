@@ -18,12 +18,17 @@ import AddEmployee from './pages/AddEmployee'
 import EditEmployee from "./pages/EditEmployee";
 import Sales from './pages/Sales';
 import AddSale from './pages/AddSale' 
+import EditSale from './pages/EditSale';
 import Purchases from './pages/Purchases';
 import AddPurchase from './pages/AddPurchase' 
+import EditPurchase from './pages/EditPurchase';
 import Saleinvoices from './pages/Saleinvoices';
+import EditSaleInvoice from './pages/EditSaleInvoice';
 import Purchaseinvoices from './pages/PurchaseInvoices';
+import EditPurchaseInvoice from './pages/EditPurchaseInvoice';
 import Pawns from './pages/Pawns';
 import AddPawn from './pages/AddPawn' 
+import EditPawn from './pages/EditPawn';
 import AddSaleInvoice from './pages/AddSaleInvoice';
 import AddPurchaseinvoice from './pages/AddPurchaseinvoice';
 
@@ -59,14 +64,23 @@ function App() {
 
           <Route path="saleinvoices" element={<Saleinvoices />} />
           <Route path="saleinvoices/add" element={<AddSaleInvoice />} />
+          <Route path="saleinvoices/edit/:id" element={<EditSaleInvoice />} />
+          
           <Route path="purchaseinvoices" element={<Purchaseinvoices />} />
           <Route path="purchaseinvoices/add" element={<AddPurchaseinvoice />} />
+          <Route path="purchaseinvoices/edit/:id" element={<EditPurchaseInvoice />} />
+          
           <Route path="Purchases" element={<Purchases />} />
           <Route path="Purchases/add" element={<AddPurchase />} />
+          <Route path="Purchases/edit/:invoiceId/:lineItemId" element={<EditPurchase />} />
+          
           <Route path="pawns" element={<Pawns />} />
           <Route path="pawns/add" element={<AddPawn />} />
+          <Route path="pawns/edit/:id" element={<EditPawn />} />
+          
           <Route path="sales" element={<Sales />} />
           <Route path="sales/add" element={<AddSale />} />
+          <Route path="sales/edit/:invoiceId/:lineItemId" element={<EditSale />} />
         </Route>
       </Routes>
     </BrowserRouter>

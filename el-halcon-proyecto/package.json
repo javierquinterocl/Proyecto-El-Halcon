@@ -17,6 +17,8 @@
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
+    "jspdf": "^3.0.1",
+    "jspdf-autotable": "^5.0.2",
     "pg": "^8.15.6",
     "react": "^19.0.0",
     "react-chartjs-2": "^5.2.0",

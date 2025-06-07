@@ -45,10 +45,14 @@ export default function AddEmployee() {
         }),
       })
 
-      if (!res.ok) throw new Error("Error al crear el empleado")
+      if (!res.ok) {
+        const errorData = await res.json()
+        throw new Error(errorData.error || `Error ${res.status}: ${res.statusText}`)
+      }
+      
       navigate("/dashboard/employees")
     } catch (err) {
-      console.error(err)
+      console.error("Error completo:", err)
       setError(err.message)
     } finally {
       setLoading(false)

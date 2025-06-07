@@ -10,6 +10,7 @@ import {
 } from "@heroicons/react/24/outline"
 import Pagination from "./PaginationComp"
 import DeleteConfirmationModal from "./DeleteConfirmationModal"
+import { formatDate } from "../utils/dateUtils"
 
 function PawnItems() {
   const navigate = useNavigate()
@@ -159,8 +160,8 @@ function PawnItems() {
                     <td className="px-6 py-4 text-sm text-gray-700">{item.pawn_id}</td>
                     <td className="px-6 py-4 text-sm text-gray-700">{item.customer_name}</td>
                     <td className="px-6 py-4 text-sm text-gray-700">{item.employee_name}</td>
-                    <td className="px-6 py-4 text-sm text-gray-700">{item.pawn_date}</td>
-                    <td className="px-6 py-4 text-sm text-gray-700">{item.expiration_date}</td>
+                    <td className="px-6 py-4 text-sm text-gray-700">{formatDate(item.pawn_date)}</td>
+                    <td className="px-6 py-4 text-sm text-gray-700">{formatDate(item.expiration_date)}</td>
                     <td className="px-6 py-4 text-sm text-gray-700">${Number(item.total_amount).toFixed(2)}</td>
                     <td className="px-6 py-4 text-sm text-gray-700">{Number(item.fee_rate).toFixed(2)}%</td>
                     <td className="px-6 py-4 text-sm text-gray-700">{item.status}</td>

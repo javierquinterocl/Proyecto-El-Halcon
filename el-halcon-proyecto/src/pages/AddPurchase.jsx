@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline"
 import { useNavigate } from "react-router-dom"
+import { formatDate } from "../utils/dateUtils"
 
 export default function AddPurchase() {
   const navigate = useNavigate()
@@ -92,7 +93,7 @@ export default function AddPurchase() {
             <option value="">-- Selecciona --</option>
             {invoices.map((inv) => (
               <option key={inv.invoice_purchase_id} value={inv.invoice_purchase_id}>
-                #{inv.invoice_purchase_id} - {inv.date} - ${inv.total}
+                #{inv.invoice_purchase_id} - {formatDate(inv.date)} - ${inv.total}
               </option>
             ))}
           </select>

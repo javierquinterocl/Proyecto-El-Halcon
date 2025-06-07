@@ -7,9 +7,12 @@ import {
   MagnifyingGlassIcon,
   ArrowPathIcon,
   FunnelIcon,
+  DocumentArrowDownIcon,
 } from "@heroicons/react/24/outline"
 import Pagination from "./PaginationComp"
 import DeleteConfirmationModal from "./DeleteConfirmationModal"
+import { formatDate } from "../utils/dateUtils"
+import { generateSaleInvoicePDF } from "../utils/pdfUtils"
 
 function SalesInvoices() {
   const [invoices, setInvoices] = useState([])
@@ -67,6 +70,29 @@ function SalesInvoices() {
 
   function handleEdit(id) {
     navigate(`/dashboard/saleinvoices/edit/${id}`)
+  }
+
+  async function generatePDF(invoice) {
+    try {
+      // Obtener datos adicionales en paralelo
+      const [detailsRes, providerRes, employeeRes] = await Promise.all([
+        fetch(`http://localhost:4000/api/sales/${invoice.invoice_sale_id}`),
+        fetch(`http://localhost:4000/api/providers/${invoice.provider_id}`),
+        fetch(`http://localhost:4000/api/employees/${invoice.employee_id}`)
+      ])
+
+      const [details, provider, employee] = await Promise.all([
+        detailsRes.ok ? detailsRes.json() : [],
+        providerRes.ok ? providerRes.json() : {},
+        employeeRes.ok ? employeeRes.json() : {}
+      ])
+
+      // Generar el PDF
+      generateSaleInvoicePDF(invoice, details, provider, employee)
+    } catch (error) {
+      console.error('Error generando PDF:', error)
+      alert('Error al generar el PDF. Inténtalo de nuevo.')
+    }
   }
 
   const filteredInvoices = invoices.filter((inv) =>
@@ -150,7 +176,7 @@ function SalesInvoices() {
                 currentItems.map((inv) => (
                   <tr key={inv.invoice_sale_id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 text-sm text-gray-700">{inv.invoice_sale_id}</td>
-                    <td className="px-6 py-4 text-sm text-gray-700">{inv.date}</td>
+                    <td className="px-6 py-4 text-sm text-gray-700">{formatDate(inv.date)}</td>
                     <td className="px-6 py-4 text-sm text-gray-700">${inv.total}</td>
                     <td className="px-6 py-4 text-sm text-gray-700">{inv.comment_sales || "—"}</td>
                     <td className="px-6 py-4 text-sm text-gray-700">{inv.provider_id}</td>
@@ -158,6 +184,13 @@ function SalesInvoices() {
                     <td className="px-6 py-4 text-sm text-gray-700">{inv.employee_id}</td>
                     <td className="px-6 py-4 text-sm text-right text-gray-700">
                       <div className="flex justify-end gap-2">
+                        <button
+                          onClick={() => generatePDF(inv)}
+                          className="text-gray-600 hover:text-[#FF5E0A]"
+                          title="Generar PDF"
+                        >
+                          <DocumentArrowDownIcon className="h-5 w-5" />
+                        </button>
                         <button
                           onClick={() => handleEdit(inv.invoice_sale_id)}
                           className="text-gray-600 hover:text-[#FF5E0A]"

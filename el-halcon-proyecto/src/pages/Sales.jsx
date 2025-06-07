@@ -54,20 +54,24 @@ function SaleItems() {
   async function confirmDelete() {
     if (!itemToDelete) return
     try {
-      const res = await fetch(`${apiUrl}/${itemToDelete.line_item_id}`, {
+      const res = await fetch(`http://localhost:4000/api/sales/detail/${itemToDelete.invoice_sale_id}/${itemToDelete.line_item_id}`, {
         method: "DELETE",
       })
       if (!res.ok) throw new Error(`Error ${res.status}`)
-      setItems(items.filter((i) => i.line_item_id !== itemToDelete.line_item_id))
+      
+      // Actualizar la lista eliminando el item
+      setItems(items.filter((item) => 
+        !(item.invoice_sale_id === itemToDelete.invoice_sale_id && item.line_item_id === itemToDelete.line_item_id)
+      ))
       closeDeleteModal()
     } catch (err) {
-      console.error("Error deleting item:", err)
+      console.error("Error al eliminar el ítem:", err)
       closeDeleteModal()
     }
   }
 
   function handleEdit(item) {
-    navigate(`/dashboard/sales/edit/${item.line_item_id}`)
+    navigate(`/dashboard/sales/edit/${item.invoice_sale_id}/${item.line_item_id}`)
   }
 
   const filteredItems = items.filter((item) =>

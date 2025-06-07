@@ -157,15 +157,14 @@ function Dashboard() {
             </div>
             {/* Navbar Items */}
             <div className="flex items-center gap-6 text-gray-800">
-              <BellIcon className="w-5 h-5 cursor-pointer" />
-              <FunnelIcon className="w-5 h-5 cursor-pointer" />
+              
               <div className="flex items-center gap-2">
                 <UserCircleIcon className="w-6 h-6" />
                 <select className="bg-transparent text-sm focus:outline-none">
                   <option>{userName || "Usuario"}</option>
                 </select>
               </div>
-              <ArrowRightOnRectangleIcon className="w-5 h-5 cursor-pointer" />
+              
             </div>
           </div>
         </header>

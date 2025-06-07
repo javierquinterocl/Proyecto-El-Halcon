@@ -478,6 +478,7 @@ BACKEND
 6. npm i
 SI ACASO( npm install express pg cors dotenv)
 7. npm start
+8- npm install jspdf@3.0.1 jspdf-autotable@5.0.2
 
 FRONT END
 

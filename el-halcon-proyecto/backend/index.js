@@ -679,6 +679,246 @@ app.post('/api/pawns', async (req, res) => {
   }
 })
 
+// GET individual sale invoice
+app.get('/api/saleinvoices/:id', async (req, res) => {
+  const { id } = req.params
+  try {
+    const result = await pool.query(
+      'SELECT * FROM pawn.invoice_sales WHERE invoice_sale_id = $1',
+      [id]
+    )
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Factura de venta no encontrada" })
+    }
+
+    res.json(result.rows[0])
+  } catch (err) {
+    console.error('Error GET /api/saleinvoices/:id:', err)
+    res.status(500).json({ error: 'Error al obtener la factura de venta' })
+  }
+})
+
+// PUT sale invoice
+app.put('/api/saleinvoices/:id', async (req, res) => {
+  const { id } = req.params
+  const { date, total, comment_sales, provider_id, payment_id, employee_id } = req.body
+
+  try {
+    const result = await pool.query(
+      `UPDATE pawn.invoice_sales
+       SET date = $1, total = $2, comment_sales = $3, provider_id = $4, payment_id = $5, employee_id = $6
+       WHERE invoice_sale_id = $7
+       RETURNING *`,
+      [date, total, comment_sales, provider_id, payment_id, employee_id, id]
+    )
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Factura de venta no encontrada" })
+    }
+
+    res.json(result.rows[0])
+  } catch (err) {
+    console.error('Error PUT /api/saleinvoices/:id:', err)
+    res.status(500).json({ error: 'Error al actualizar la factura de venta' })
+  }
+})
+
+// GET individual sale detail by composite key
+app.get('/api/sales/detail/:invoiceId/:lineItemId', async (req, res) => {
+  const { invoiceId, lineItemId } = req.params
+  try {
+    const result = await pool.query(
+      'SELECT * FROM pawn.detail_sales WHERE invoice_sale_id = $1 AND line_item_id = $2',
+      [invoiceId, lineItemId]
+    )
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Detalle de venta no encontrado" })
+    }
+
+    res.json(result.rows[0])
+  } catch (err) {
+    console.error('Error GET /api/sales/detail/:invoiceId/:lineItemId:', err)
+    res.status(500).json({ error: 'Error al obtener el detalle de venta' })
+  }
+})
+
+// PUT sale detail by composite key
+app.put('/api/sales/detail/:invoiceId/:lineItemId', async (req, res) => {
+  const { invoiceId, lineItemId } = req.params
+  const { quantity, price, sub_total, product_id, invoice_sale_id } = req.body
+
+  try {
+    const result = await pool.query(
+      `UPDATE pawn.detail_sales
+       SET quantity = $1, price = $2, sub_total = $3, product_id = $4, invoice_sale_id = $5
+       WHERE invoice_sale_id = $6 AND line_item_id = $7
+       RETURNING *`,
+      [quantity, price, sub_total, product_id, invoice_sale_id, invoiceId, lineItemId]
+    )
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Detalle de venta no encontrado" })
+    }
+
+    res.json(result.rows[0])
+  } catch (err) {
+    console.error('Error PUT /api/sales/detail/:invoiceId/:lineItemId:', err)
+    res.status(500).json({ error: 'Error al actualizar el detalle de venta' })
+  }
+})
+
+// GET individual purchase detail by composite key
+app.get('/api/purchases/detail/:invoiceId/:lineItemId', async (req, res) => {
+  const { invoiceId, lineItemId } = req.params
+  try {
+    const result = await pool.query(
+      'SELECT * FROM pawn.detail_purchases WHERE invoice_purchase_id = $1 AND line_item_id = $2',
+      [invoiceId, lineItemId]
+    )
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Detalle de compra no encontrado" })
+    }
+
+    res.json(result.rows[0])
+  } catch (err) {
+    console.error('Error GET /api/purchases/detail/:invoiceId/:lineItemId:', err)
+    res.status(500).json({ error: 'Error al obtener el detalle de compra' })
+  }
+})
+
+// PUT purchase detail by composite key
+app.put('/api/purchases/detail/:invoiceId/:lineItemId', async (req, res) => {
+  const { invoiceId, lineItemId } = req.params
+  const { quantity, price, sub_total, product_id, invoice_purchase_id } = req.body
+
+  try {
+    const result = await pool.query(
+      `UPDATE pawn.detail_purchases
+       SET quantity = $1, price = $2, sub_total = $3, product_id = $4, invoice_purchase_id = $5
+       WHERE invoice_purchase_id = $6 AND line_item_id = $7
+       RETURNING *`,
+      [quantity, price, sub_total, product_id, invoice_purchase_id, invoiceId, lineItemId]
+    )
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Detalle de compra no encontrado" })
+    }
+
+    res.json(result.rows[0])
+  } catch (err) {
+    console.error('Error PUT /api/purchases/detail/:invoiceId/:lineItemId:', err)
+    res.status(500).json({ error: 'Error al actualizar el detalle de compra' })
+  }
+})
+
+// DELETE sale detail by composite key
+app.delete('/api/sales/detail/:invoiceId/:lineItemId', async (req, res) => {
+  const { invoiceId, lineItemId } = req.params
+  try {
+    const result = await pool.query(
+      'DELETE FROM pawn.detail_sales WHERE invoice_sale_id = $1 AND line_item_id = $2 RETURNING *',
+      [invoiceId, lineItemId]
+    )
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Detalle de venta no encontrado" })
+    }
+
+    res.json({ message: "Detalle de venta eliminado exitosamente" })
+  } catch (err) {
+    console.error('Error DELETE /api/sales/detail/:invoiceId/:lineItemId:', err)
+    res.status(500).json({ error: 'Error al eliminar el detalle de venta' })
+  }
+})
+
+// DELETE purchase detail by composite key
+app.delete('/api/purchases/detail/:invoiceId/:lineItemId', async (req, res) => {
+  const { invoiceId, lineItemId } = req.params
+  try {
+    const result = await pool.query(
+      'DELETE FROM pawn.detail_purchases WHERE invoice_purchase_id = $1 AND line_item_id = $2 RETURNING *',
+      [invoiceId, lineItemId]
+    )
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Detalle de compra no encontrado" })
+    }
+
+    res.json({ message: "Detalle de compra eliminado exitosamente" })
+  } catch (err) {
+    console.error('Error DELETE /api/purchases/detail/:invoiceId/:lineItemId:', err)
+    res.status(500).json({ error: 'Error al eliminar el detalle de compra' })
+  }
+})
+
+// GET individual pawn
+app.get('/api/pawns/:id', async (req, res) => {
+  const { id } = req.params
+  try {
+    const result = await pool.query(
+      'SELECT * FROM pawn.pawns WHERE pawn_id = $1',
+      [id]
+    )
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Empeño no encontrado" })
+    }
+
+    res.json(result.rows[0])
+  } catch (err) {
+    console.error('Error GET /api/pawns/:id:', err)
+    res.status(500).json({ error: 'Error al obtener el empeño' })
+  }
+})
+
+// PUT pawn
+app.put('/api/pawns/:id', async (req, res) => {
+  const { id } = req.params
+  const { pawn_date, return_date, expiration_date, fee_rate, total_amount, status, epe_id, ctr_id } = req.body
+
+  try {
+    const result = await pool.query(
+      `UPDATE pawn.pawns
+       SET pawn_date = $1, return_date = $2, expiration_date = $3, fee_rate = $4, 
+           total_amount = $5, status = $6, epe_id = $7, ctr_id = $8
+       WHERE pawn_id = $9
+       RETURNING *`,
+      [pawn_date, return_date, expiration_date, fee_rate, total_amount, status, epe_id, ctr_id, id]
+    )
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Empeño no encontrado" })
+    }
+
+    res.json(result.rows[0])
+  } catch (err) {
+    console.error('Error PUT /api/pawns/:id:', err)
+    res.status(500).json({ error: 'Error al actualizar el empeño' })
+  }
+})
+
+// DELETE pawn
+app.delete('/api/pawns/:id', async (req, res) => {
+  const { id } = req.params
+  try {
+    const result = await pool.query(
+      'DELETE FROM pawn.pawns WHERE pawn_id = $1 RETURNING *',
+      [id]
+    )
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Empeño no encontrado" })
+    }
+
+    res.json({ message: "Empeño eliminado exitosamente" })
+  } catch (err) {
+    console.error('Error DELETE /api/pawns/:id:', err)
+    res.status(500).json({ error: 'Error al eliminar el empeño' })
+  }
+})
 
 // Start server
 app.listen(port, () => {

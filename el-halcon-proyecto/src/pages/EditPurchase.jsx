@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { useParams, useNavigate, Link } from "react-router-dom"
 import { ArrowLeftIcon, CheckIcon } from "@heroicons/react/24/outline"
 
-function EditSale() {
+function EditPurchase() {
   const { invoiceId, lineItemId } = useParams()
   const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
@@ -16,43 +16,42 @@ function EditSale() {
     price: "",
     sub_total: "",
     product_id: "",
-    invoice_sale_id: "",
+    invoice_purchase_id: "",
   })
 
-  const apiUrl = "http://localhost:4000/api/sales/detail"
+  const apiUrl = "http://localhost:4000/api/purchases/detail"
 
   useEffect(() => {
     async function fetchData() {
       try {
         setLoading(true)
         
-        // Cargar detalle de venta, productos y facturas en paralelo
-        const [saleRes, productsRes, invoicesRes] = await Promise.all([
+        // Cargar detalle de compra, productos y facturas en paralelo
+        const [purchaseRes, productsRes, invoicesRes] = await Promise.all([
           fetch(`${apiUrl}/${invoiceId}/${lineItemId}`),
           fetch("http://localhost:4000/api/products"),
-          fetch("http://localhost:4000/api/saleinvoices")
+          fetch("http://localhost:4000/api/purchaseinvoices")
         ])
 
-        if (!saleRes.ok) {
-          throw new Error(`Error ${saleRes.status}: No se pudo cargar el detalle de venta`)
+        if (!purchaseRes.ok) {
+          throw new Error(`Error ${purchaseRes.status}: No se pudo cargar el detalle de compra`)
         }
 
-        const [salesData, productsData, invoicesData] = await Promise.all([
-          saleRes.json(),
+        const [purchaseData, productsData, invoicesData] = await Promise.all([
+          purchaseRes.json(),
           productsRes.json(),
           invoicesRes.json()
         ])
 
-        // Como ahora devuelve directamente el objeto, no necesitamos buscar en array
         setProducts(productsData)
         setInvoices(invoicesData)
         setFormData({
-          line_item_id: lineItemId || salesData.line_item_id || "",
-          quantity: salesData.quantity || "",
-          price: salesData.price || "",
-          sub_total: salesData.sub_total || "",
-          product_id: salesData.product_id || "",
-          invoice_sale_id: salesData.invoice_sale_id || "",
+          line_item_id: purchaseData.line_item_id || "",
+          quantity: purchaseData.quantity || "",
+          price: purchaseData.price || "",
+          sub_total: purchaseData.sub_total || "",
+          product_id: purchaseData.product_id || "",
+          invoice_purchase_id: purchaseData.invoice_purchase_id || "",
         })
       } catch (err) {
         console.error("Error fetching data:", err)
@@ -69,10 +68,7 @@ function EditSale() {
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    setFormData({
-      ...formData,
-      [name]: value,
-    })
+    setFormData(prev => ({ ...prev, [name]: value }))
   }
 
   const handleSubmit = async (e) => {
@@ -89,17 +85,17 @@ function EditSale() {
           price: parseFloat(formData.price),
           sub_total: parseFloat(formData.sub_total),
           product_id: formData.product_id,
-          invoice_sale_id: parseInt(formData.invoice_sale_id),
+          invoice_purchase_id: parseInt(formData.invoice_purchase_id),
         }),
       })
 
       if (!res.ok) {
-        throw new Error(`Error ${res.status}: No se pudo actualizar el detalle de venta`)
+        throw new Error(`Error ${res.status}: No se pudo actualizar el detalle de compra`)
       }
 
-      navigate("/dashboard/sales")
+      navigate("/dashboard/Purchases")
     } catch (err) {
-      console.error("Error updating sale:", err)
+      console.error("Error updating purchase:", err)
       setError(err.message)
       setSaving(false)
     }
@@ -119,10 +115,10 @@ function EditSale() {
         <h3 className="text-lg font-semibold mb-2">Error</h3>
         <p>{error}</p>
         <button
-          onClick={() => navigate("/dashboard/sales")}
+          onClick={() => navigate("/dashboard/Purchases")}
           className="mt-4 bg-[#FF5E0A] text-white px-4 py-2 rounded-full hover:bg-orange-600 transition-colors"
         >
-          Volver a Ventas
+          Volver a Compras
         </button>
       </div>
     )
@@ -131,49 +127,27 @@ function EditSale() {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-semibold text-gray-800">Editar Detalle de Venta</h1>
+        <h1 className="text-2xl font-semibold text-gray-800">Editar Detalle de Compra</h1>
         <Link
-          to="/dashboard/sales"
+          to="/dashboard/Purchases"
           className="flex items-center gap-1 text-gray-600 hover:text-[#FF5E0A] transition-colors"
         >
           <ArrowLeftIcon className="h-4 w-4" />
-          <span>Volver a Ventas</span>
+          <span>Volver a Compras</span>
         </Link>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="p-6 border-b border-gray-200">
-            <h2 className="text-lg font-medium text-gray-800">Información del Detalle de Venta</h2>
+            <h2 className="text-lg font-medium text-gray-800">Información del Detalle de Compra</h2>
           </div>
 
           <div className="p-6 space-y-6">
-            {/* Factura de Venta */}
-            <div>
-              <label htmlFor="invoice_sale_id" className="block text-sm font-medium text-gray-700 mb-1">
-                Factura de Venta
-              </label>
-              <select
-                id="invoice_sale_id"
-                name="invoice_sale_id"
-                value={formData.invoice_sale_id}
-                onChange={handleChange}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FF5E0A] focus:border-transparent"
-                required
-              >
-                <option value="">Seleccionar factura...</option>
-                {invoices.map((invoice) => (
-                  <option key={invoice.invoice_sale_id} value={invoice.invoice_sale_id}>
-                    Factura #{invoice.invoice_sale_id} - ${invoice.total}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Número de línea */}
+            {/* ID del Detalle */}
             <div>
               <label htmlFor="line_item_id" className="block text-sm font-medium text-gray-700 mb-1">
-                Número de Línea
+                ID del Detalle
               </label>
               <input
                 type="text"
@@ -183,6 +157,28 @@ function EditSale() {
                 className="w-full px-4 py-2 rounded-lg border border-gray-300 bg-gray-100 cursor-not-allowed"
                 disabled
               />
+            </div>
+
+            {/* Factura de Compra */}
+            <div>
+              <label htmlFor="invoice_purchase_id" className="block text-sm font-medium text-gray-700 mb-1">
+                Factura de Compra
+              </label>
+              <select
+                id="invoice_purchase_id"
+                name="invoice_purchase_id"
+                value={formData.invoice_purchase_id}
+                onChange={handleChange}
+                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FF5E0A] focus:border-transparent"
+                required
+              >
+                <option value="">Seleccionar factura...</option>
+                {invoices.map((invoice) => (
+                  <option key={invoice.invoice_purchase_id} value={invoice.invoice_purchase_id}>
+                    Factura #{invoice.invoice_purchase_id} - ${invoice.total}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Producto */}
@@ -264,7 +260,7 @@ function EditSale() {
 
         <div className="flex justify-end gap-3">
           <Link
-            to="/dashboard/sales"
+            to="/dashboard/Purchases"
             className="px-6 py-2 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50 transition-colors"
           >
             Cancelar
@@ -292,4 +288,4 @@ function EditSale() {
   )
 }
 
-export default EditSale
+export default EditPurchase 
